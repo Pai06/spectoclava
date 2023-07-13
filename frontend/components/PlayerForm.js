@@ -21,7 +21,7 @@ const PlayerForm = ({ onSubmit, format, onFormatChange }) => {
         placeholder="Enter player name"
         value={playerName}
         onChange={(e) => setPlayerName(e.target.value)}
-        className="text-white ml-4 py-2 px-4 text-lg font-bold transition duration-500 ease-in-out transform  hover:text-gray-500 cursor-pointer bg-gray-800 rounded"
+        className="text-white ml-4 mr-2 py-2 px-4 text-lg font-bold transition duration-500 ease-in-out transform  hover:text-gray-500 cursor-pointer bg-gray-800 rounded"
       />
       <select
         value={format}
