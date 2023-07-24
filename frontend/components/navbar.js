@@ -29,7 +29,7 @@ const Navbar = () => {
 
     return (
         <nav className="p-5 rounded-sm shadow text-l bg-gray-900 border-white relative">
-            <div className="flex justify-end"> {/* Updated this line */}
+            <div className="flex justify-end"> 
 
 
                 <Link href="/">
