@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import PlayerForm from '../../components/PlayerForm';
 import Loading from '../../components/loading';
+import Navbar from '../../components/navbar';
+
 
 const HomePage = () => {
   const [playerStats, setPlayerStats] = useState(null);
@@ -35,6 +37,8 @@ const HomePage = () => {
 
   return (
     <>
+
+      <Navbar />
 
       <div className="bg-gray-900 min-h-screen">
         <div className=' justify-center grid items-center '>

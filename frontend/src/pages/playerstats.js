@@ -1,9 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
+import Navbar from '../../components/navbar';
 
 const Stats = () => {
   return (
-    <div className="bg-gray-900 min-h-screen">
+
+    <><Navbar /><div className="bg-gray-900 min-h-screen">
 
 
       <div className="container mx-auto py-8 text-center items-center grid">
@@ -22,7 +24,7 @@ const Stats = () => {
         </div>
 
       </div>
-    </div>
+    </div></>
   );
 };
 
