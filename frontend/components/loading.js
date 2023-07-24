@@ -33,20 +33,20 @@ const loadingCircleVariants = {
     y: "0%",
   },
   end: {
-    y: "60%",
+    y: "40%",
   },
 };
 const loadingCircleTransition = {
-  duration : 0.4,
-  yoyo : Infinity,
-  ease: 'easeInOut'
-}
+  duration: 0.7,
+  repeat: Infinity, // Make the animation repeat infinitely
+  ease: "easeInOut",
+};
 
 const Loader = () => {
   return (
-    <div>
-      <div className="fixed  w-full min-h-screen z-50 bg-white opacity-30" />
-      <div className="flex fixed w-full justify-center items-center h-screen">
+    <div className="">
+      <div className="fixed bg-white opacity-30" />
+      <div className="flex justify-center items-center h-screen">
         <motion.div
           style={loadingContainer}
           variants={loadingContainerVariants}

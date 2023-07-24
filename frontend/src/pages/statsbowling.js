@@ -38,7 +38,7 @@ const HomePage = () => {
 
       <div className="bg-gray-900 min-h-screen">
         <div className=' justify-center grid items-center '>
-          <h1 className="text-3xl font-bold mb-4 grid justify-center place-items-center text-gray-300">Player Stats</h1>
+          <h1 className="text-3xl font-bold mb-4 grid justify-center place-items-center text-gray-300">Player Statistics</h1>
           <PlayerForm
             onSubmit={handleSubmit}
             format={selectedFormat}
