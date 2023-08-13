@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 /* Add this CSS to your existing styles */
+/* styles.css */
+
+body {
+  margin: 0;
+}
+
 
 .gradient-text {
   background-image: linear-gradient(0deg, #ffffff, #989898);
@@ -39,11 +45,11 @@
   height: 100%;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  border-radius: 40px; /* Add rounded corners */
+  border-radius: 50px; /* Add rounded corners */
 }
 
 .flip-card-front {
-  background-image: linear-gradient(0deg, #ffffff, #989898);
+  background-color: #9e9e9e; /* Dark gray background */
 
   color: black;
 }

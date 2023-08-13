@@ -36,11 +36,13 @@ const HomePage = () => {
 
   return (
     <>
-    <Navbar />
+      <Navbar />
 
-      <div className="bg-gray-900 min-h-screen">
-        <div className=' justify-center grid items-center '>
-          <h1 className="text-3xl font-bold mb-4 grid justify-center place-items-center text-gray-300">Player Statistics</h1>
+      <div className="bg-gray-900 min-h-screen p-4">
+        <h1 className="text-3xl font-bold mb-4 mt-24 text-center text-gray-300">
+          Player Batting Statistics
+        </h1>
+        <div className="grid justify-center items-center space-y-4">
           <PlayerForm
             onSubmit={handleSubmit}
             format={selectedFormat}
@@ -48,45 +50,49 @@ const HomePage = () => {
           />
         </div>
 
-        {isLoading && <Loader />} {/* Show loading spinner only when isLoading is true */}
-        {playerStats && playerStats.headers && playerStats.data ? (
-          <div>
-            <div className='grid place-items-center'>
-              <h2 className="text-2xl font-bold mb-2 text-gray-300">{playerStats.player}</h2>
+        {isLoading ? ( // Show loading spinner only when isLoading is true
+          <Loader />
+        ) : (
+          playerStats && playerStats.headers && playerStats.data && (
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-2 text-gray-300">
+                {playerStats.player}
+              </h2>
               <p className="mb-4 text-gray-300">Format: {playerStats.format}</p>
-            </div>
-            <div className="border border-gray-300 rounded-lg">
-              <table className="w-full text-white">
-                <thead>
-                  <tr>
-                    {playerStats.headers.map((header, index) => (
-                      <th
-                        key={index}
-                        className="py-2 px-4 bg-gray-500 font-medium text-left"
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {playerStats.data.map((row, index) => (
-                    <tr key={index}>
-                      {row.map((cell, cellIndex) => (
-                        <td
-                          key={cellIndex}
-                          className="py-2 px-4 border-t border-white text-left"
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-white">
+                  <thead>
+                    <tr>
+                      {playerStats.headers.map((header, index) => (
+                        <th
+                          key={index}
+                          className="py-2 px-4 bg-gray-500 font-medium text-left"
                         >
-                          {cell}
-                        </td>
+                          {header}
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {playerStats.data.map((row, index) => (
+                      <tr key={index}>
+                        {row.map((cell, cellIndex) => (
+                          <td
+                            key={cellIndex}
+                            className="py-2 px-4 border-t border-white text-left"
+                          >
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        ) : null}
+          )
+        )}
       </div>
     </>
   );
