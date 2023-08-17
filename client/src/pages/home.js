@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '@/components/navbar';
 import Head from 'next/head';
-import { auth } from '@/components/firebase';
+import { auth, firestore } from '@/components/firebase'; // Import firestore from Firebase
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useState } from 'react';
@@ -9,7 +9,7 @@ import { useState } from 'react';
 
 const Home = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [email, setEmail] = useState(''); // Define the email state
   const [user, setUser] = useAuthState(auth);
 
   const toggleMenu = () => {
@@ -27,6 +27,18 @@ const Home = () => {
     // Do something with userInfo, if needed
   };
 
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await firestore.collection('emails').add({ email });
+      console.log('Email saved successfully');
+      setEmail(''); // Clear the input after submission
+    } catch (error) {
+      console.error('Error saving email:', error);
+    }
+  };
 
 
   return (
@@ -71,8 +83,8 @@ const Home = () => {
                   </p>
                   {user ? (
                     <a href="/tools" className="inline-flex items-center font-medium text-primary-600 hover:text-primary-800 dark:text-primary-500 dark:hover:text-primary-700">
-                      Get Started
-                      <svg class="ml-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                      Explore
+                      <svg class="mt-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
                     </a>
                   ) : (
                     <button
@@ -110,17 +122,31 @@ const Home = () => {
           </div>
         </section>
         <div className="border-t border-gray-200"></div>
-        <section id="section3" className="bg-white dark:bg-gray-900 font-sans">
-          <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-            <div class="max-w-screen-lg text-gray-500 sm:text-lg dark:text-gray-400">
-              <h2 class="mb-4 text-4xl tracking-tight font-bold text-gray-900 dark:text-white">Powering innovation at <span class="font-extrabold">200,000+</span> companies worldwide</h2>
-              <p class="mb-4 font-light">Track work across the enterprise through an open, collaborative platform. Link issues across Jira and ingest data from other software development tools, so your IT support and operations teams have richer contextual information to rapidly respond to requests, incidents, and changes.</p>
-              <p class="mb-4 font-medium">Deliver great service experiences fast - without the complexity of traditional ITSM solutions.Accelerate critical development work, eliminate toil, and deploy changes with ease.</p>
-
+        <section className="bg-white dark:bg-gray-900 text-gray-200">
+          <div className="max-w-screen-xl mx-auto py-16 px-4 lg:ml-96 flex justify-center lg:grid lg:grid-cols-2 lg:gap-8 lg:py-24">
+            <div className="text-center lg:text-left lg:flex lg:flex-col lg:justify-center">
+              <h2 className="text-3xl justify-center flex place-items-center font-semibold mb-4">Subscribe to Us</h2>
+              <p className="text-gray-300 text-lg mb-4">
+                Feel free to reach out to us with your questions and inquiries.
+              </p>
+              <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full lg:w-80 px-4 py-2 rounded-l-md border focus:outline-none text-gray-900 focus:border-blue-500 mb-2 lg:mb-0 lg:mr-2"
+                  placeholder="Enter your email"
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition duration-300"
+                >
+                  Submit
+                </button>
+              </form>
             </div>
           </div>
         </section>
-        {/* Add more sections here as needed */}
       </main>
       <footer className="py-8 bg-gray-900 text-gray-200 text-center">
         <div className="container mx-auto">

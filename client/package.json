@@ -2,16 +2,20 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
+  "proxy":"http://localhost:5000/",
+
   "dependencies": {
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
+    "emailjs-com": "^3.2.0",
     "firebase": "^10.1.0",
     "framer-motion": "^10.15.1",
     "next": "13.4.12",
