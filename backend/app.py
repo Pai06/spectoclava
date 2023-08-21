@@ -1,14 +1,23 @@
-from analysis_notebook import add_numbers
-from fastapi import FastAPI
-from pydantic import BaseModel
+# Import flask and datetime module for showing date and time
+from flask import Flask
+import datetime
 
-app = FastAPI()
+x = datetime.datetime.now()
 
-class Numbers(BaseModel):
-    num1: int
-    num2: int
+# Initializing flask app
+app = Flask(__name__)
 
-@app.post("/api/add")
-def api_add_numbers(numbers: Numbers):
-    result = add_numbers(numbers.num1, numbers.num2)  # Use the imported function
-    return {"result": result}
+# Route for seeing a data
+@app.route('/data')
+def get_time():
+	# Returning an api for showing in reactjs
+	return {
+		'Name':"geek",
+		"Age":"22",
+		"Date":x,
+		"programming":"python"
+		}
+
+# Running app on localhost:5000
+if __name__ == '__main__':
+	app.run(debug=True, host='localhost', port=5000)

@@ -39,7 +39,7 @@ const Tools = () => {
   if (!user) {
 
     return (
-      <><Navbar /><div className="min-h-screen bg-gray-900 font-bold text-white font-mono text-4xl mx-auto flex items-center justify-center ">
+      <><Navbar /><div className="min-h-screen ml-10 sm:mx-auto  bg-gray-900 font-bold text-white font-mono text-4xl  flex items-center justify-center ">
         Please Login Before Accessing this page
       </div></>
 
