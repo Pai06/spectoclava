@@ -1,66 +1,44 @@
-from flask import Flask, render_template, jsonify
-import nbformat
-from flask_cors import CORS
-from nbconvert import HTMLExporter
+# main.py
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 import pandas as pd
-import io
+import numpy as np
+import requests
+from bs4 import BeautifulSoup
+from numpy import floor
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
 
-@app.route('/')
-def run_notebook():
-    notebook_path = 'datascraping.ipynb'  # Path to your datascraping.ipynb file
+def fetch_cricket_data():
+    batter = 'Jos Buttler'
+    bowler = 'Pat Cummins'
+    url = "http://www.cricmetric.com/matchup.py?batsman=" + batter.replace(' ', '+') + "&bowler=" + bowler.replace(' ', '+')
+    response = requests.get(url)
 
-    with open(notebook_path, 'r', encoding='utf-8') as f:
-        nb = nbformat.read(f, as_version=4)
+    if response.status_code == 200:
+        html_content = response.content
+        soup = BeautifulSoup(html_content, "html.parser")
+        tables = soup.find_all("table")
 
-    # Execute the notebook
-    exec_dict = {}
-    exec(nb.cells[0].source, exec_dict)
+        dataframes = []
+        for table in tables:
+            df = pd.read_html(str(table))[0]
+            dataframes.append(df)
 
-    # Get the DataFrame from the notebook execution
-    df = exec_dict['df']
+        merged_df = pd.concat(dataframes).groupby('Year').sum(numeric_only=True).reset_index()
+        merged_df['SR'] = (merged_df['Runs'] / merged_df['Balls'] * 100).round(2)
+        filtered_df = merged_df[merged_df['Year'] != 'Total']
+        return filtered_df
 
-    # Convert the DataFrame to HTML
-    html_table = df.to_html(index=False)
+    return None
 
-    return render_template('output.html', table=html_table)
-
-@app.route('/api/dataframe')
-def get_dataframe():
-    notebook_path = 'datascraping.ipynb'  
-
-    with open(notebook_path, 'r', encoding='utf-8') as f:
-        nb = nbformat.read(f, as_version=4)
-
-    exec_dict = {}
-    exec(nb.cells[0].source, exec_dict)
-
-    df = exec_dict['df']
-
-    json_data = df.to_json(orient='records')
-
-    return jsonify(data=json_data)
-
-@app.route('/dataframe')
-def show_dataframe():
-    notebook_path = 'datascraping.ipynb'  
-
-    with open(notebook_path, 'r', encoding='utf-8') as f:
-        nb = nbformat.read(f, as_version=4)
-
-    # Execute the notebook
-    exec_dict = {}
-    exec(nb.cells[0].source, exec_dict)
-
-    # Get the DataFrame from the notebook execution
-    df = exec_dict['df']
-
-    # Convert the DataFrame to HTML
-    html_table = df.to_html(index=False)
-
-    return html_table
-
-if __name__ == '__main__':
-    app.run()
+@app.get("/api/cricket-data")
+async def get_cricket_data():
+    cricket_data = fetch_cricket_data()
+    if cricket_data is not None:
+        return JSONResponse(content=cricket_data.to_dict(orient='records'))
+    else:
+        return JSONResponse(content={"error": "Failed to retrieve cricket data"}, status_code=500)
