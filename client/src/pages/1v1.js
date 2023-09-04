@@ -60,7 +60,7 @@ export default function Home() {
           data: srData,
           borderColor: "rgb(75, 192, 192)",
           borderWidth: 2,
-          fill: false,
+          fill: false, 
         },
       ],
     };
