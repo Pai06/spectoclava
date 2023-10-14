@@ -24,7 +24,6 @@ const Navbar = () => {
       email: user.email,
       image: user.photoURL
     };
-    // Do something with userInfo, if needed
   };
 
   useEffect(() => {

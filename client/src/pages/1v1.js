@@ -1,13 +1,21 @@
+import React, { useState } from "react";
 import Navbar from "@/components/navbar";
-import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function Home() {
   const [batsman, setBatsman] = useState("");
   const [bowler, setBowler] = useState("");
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [chartData, setChartData] = useState(null); // Initialize chartData as null
+  const [loading, setLoading] = useState(false);
 
   const handleBatsmanChange = (e) => {
     setBatsman(e.target.value);
@@ -17,10 +25,9 @@ export default function Home() {
     setBowler(e.target.value);
   };
 
-  const rowClass = "border border-gray-300 text-gray-300";
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch(
@@ -32,38 +39,14 @@ export default function Home() {
       if (response.ok) {
         const jsonData = await response.json();
         setData(jsonData);
-        setLoading(false);
-
-        // Call a function to set chart data
-        setChartData(getChartData(jsonData));
       } else {
         console.error("Error fetching data:", response.statusText);
-        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
       setLoading(false);
     }
-  };
-
-  // Function to generate chart data
-  // Function to generate chart data
-  const getChartData = (jsonData) => {
-    const labels = jsonData.map((item) => item.Year);
-    const srData = jsonData.map((item) => item.SR);
-
-    return {
-      labels: labels,
-      datasets: [
-        {
-          label: "SR (Strike Rate)",
-          data: srData,
-          borderColor: "rgb(75, 192, 192)",
-          borderWidth: 2,
-          fill: false, 
-        },
-      ],
-    };
   };
 
   return (
@@ -93,45 +76,82 @@ export default function Home() {
             <button
               className="py-2 px-4 text-base font-bold transition duration-300 ease-in-out transform hover:scale-105 text-gray-300 hover:text-gray-100 cursor-pointer bg-gray-800 rounded w-full mt-4"
               type="submit"
+              disabled={loading}
             >
               Submit
             </button>
           </div>
         </form>
-        {chartData && (
-          <div className="mt-6">
-            <Line data={chartData} /> {/* Display the Line chart */}
+
+        {data.length > 0 && (
+          <div className="relative z-10">
+            <h2 className="text-xl font-bold text-gray-300">Year vs SR</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={data}>
+                <XAxis
+                  dataKey="Year"
+                  label={{
+                    value: "Year",
+                    position: "bottom",
+                    fontSize: 16,
+                    fill: "white",
+                  }}
+                />
+                <YAxis
+                  label={{
+                    value: "Strike Rate",
+                    angle: -90,
+                    position: "left",
+                    offset: -9,
+                    fontSize: 16,
+                    fill: "white",
+                  }}
+                />
+                <CartesianGrid strokeDasharray="3 3" />
+                <Tooltip />
+                <Legend iconType="circle" iconSize={10} />
+                <Line type="monotone" dataKey="SR" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         )}
+
         {data.length > 0 && (
-          <table className="min-w-full border-collapse border">
-            <thead>
-              <tr className="bg-gray-100 text-gray-900">
-                <th>Year</th>
-                <th>Runs</th>
-                <th>Balls</th>
-                <th>Outs</th>
-                <th>Dots</th>
-                <th>4s</th>
-                <th>6s</th>
-                <th>SR</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item) => (
-                <tr key={item.Year}>
-                  <td className={rowClass}>{item.Year}</td>
-                  <td className={rowClass}>{item.Runs}</td>
-                  <td className={rowClass}>{item.Balls}</td>
-                  <td className={rowClass}>{item.Outs}</td>
-                  <td className={rowClass}>{item.Dots}</td>
-                  <td className={rowClass}>{item["4s"]}</td>
-                  <td className={rowClass}>{item["6s"]}</td>
-                  <td className={rowClass}>{item.SR}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="mt-6">
+            <h2 className="text-xl font-bold text-gray-300">Table of Data</h2>
+            <div className="overflow-x-auto">
+              <table className="table table-auto table-border table-striped text-gray-200 text-gray-100">
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Strike Rate</th>
+                    <th>Runs</th>
+                    <th>Balls</th>
+                    <th>Outs</th>
+                    <th>Dots</th>
+                    <th>4s</th>
+                    <th>6s</th>
+                    <th>Avg</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.Year}</td>
+                      <td>{item.SR}</td>
+                      <td>{item.Runs}</td>
+                      <td>{item.Balls}</td>
+                      <td>{item.Outs}</td>
+                      <td>{item.Dots}</td>
+                      <td>{item.Fours}</td>
+                      <td>{item.Sixes}</td>
+                      <td>{item.Avg}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
       </div>
     </>
